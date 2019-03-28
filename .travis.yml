@@ -1,0 +1,35 @@
+dist: xenial
+os: linux
+
+git:
+  depth: 150
+
+env:
+  global:
+  - CACHE_DIR="$HOME/misc_cache"
+  - MINICONDA_DIR="$HOME/miniconda"
+  - PIP_DIR="$HOME/virtualenv"
+  - GATK_PATH="$CACHE_DIR"
+  - PYTHONIOENCODING=UTF8
+cache:
+  directories:
+    - $HOME/misc_cache
+    - $HOME/miniconda
+  timeout: 1000
+
+jobs:
+  fast_finish: true
+  include:
+
+    - language: python
+      python: 3.6
+      sudo: required
+      env:
+        - TRAVIS_JOB=test_py36
+      install:
+        - source travis/install-conda.sh
+        - conda create -y --quiet --file requirements-conda.txt --file requirements-conda-tests.txt --file requirements-py3.txt -n py36
+      script:
+        - echo 0
+      before_cache:
+        - conda clean --all --yes
